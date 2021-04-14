@@ -12,8 +12,18 @@ f.config["DEBUG"] = True
 def home():
     return "Home"
 
-
 @f.route('/api/update', methods=['GET'])
+def update():
+    args = flask.request.args
+    vendor_name = args.get('vendor_name')
+    product_id = args.get('product_id')
+    s = Scraper(vendor_name)
+    price = s.get_price(product_id)
+    db.add_price(vendor_name, product_id, time(), price)
+    return {}
+
+
+@f.route('/api/update-all', methods=['GET'])
 def update_all():
     for vendor in db.get_all_vendors():
         vendor_name = vendor['vendor_name']
@@ -22,6 +32,7 @@ def update_all():
             prices = s.get_price(product_id)
             db.add_price(vendor_name, product_id, time(), prices['actual_price'])
     return {}
+
 
 @f.route('/api/getprice', methods=['GET'])
 def get_prices():
