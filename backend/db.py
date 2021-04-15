@@ -40,10 +40,20 @@ class saletrackerdb:
                 }
             )
             return True
-
         else:
-
             return False
+
+    def link_product(self, user_id, vendor_name, product_id):
+        vendor_names = self.db.users.find_one({'id': user_id})['products']
+        if vendor_name not in vendor_names:
+            vendor_names[vendor_name] = {}
+        if product_id not in vendor_names[vendor_name]:
+            vendor_names[vendor_name][product_id] = ''
+            self.db.users.update_one({'id': user_id}, {'$set': {'products': vendor_names}})
+            return True
+        else:
+            return False
+
 
     def add_vendor(self, vendor_name):
         if self.get_vendor(vendor_name) is not None:
@@ -70,6 +80,7 @@ class saletrackerdb:
         else:
             return False
 
+
     def add_price(self, vendor_name, product_id, timestamp, price):
         vendor = self.get_vendor(vendor_name)
         products = vendor['products']
@@ -85,20 +96,20 @@ class saletrackerdb:
     def get_all_vendors(self):
         return self.db.products.find()
 
-    def get_prices(self, vendor_name, product_id):
+    def get_product_info(self, vendor_name, product_id):
         vendor = self.db.products.find_one({"vendor_name": vendor_name})
         if vendor:
             product = vendor["products"].get(product_id)
             if product:
-                return product['prices']
+                return product
 
         return False
 
     def remove_product(self, vendor_name, product_id):
-        vendor = self.get_vendor(vendor_name)
-        if product_id in vendor['products']:
-            vendor['products'].pop(product_id)
-            self.update_vendor(vendor_name, vendor)
+        products = self.get_vendor(vendor_name)["products"]
+        if product_id in products:
+            products.pop(product_id)
+            self.db.products.update_one({"vendor_name": vendor_name}, {"$set": {'products': products}})
             return True
         else:
             return False
