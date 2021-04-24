@@ -21,7 +21,22 @@ const styles = theme => ({
 class TrackForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = {url: ''};
+    let limit = 50
+    let items = {}
+    for (let i = 0; i < limit; i++) {
+      items[i] = {
+        exists: 'false',
+        vendor_name: '',
+        name: '',
+        img_url: '',
+        price: '',
+      }
+    }
+    this.state = {
+      url: '',
+      items: items,
+      limit: limit,
+    };
     this.handleChange = this.handleChange.bind(this);
     this.handleSubmit = this.handleSubmit.bind(this);
   }
@@ -63,9 +78,50 @@ class TrackForm extends React.Component {
               InputProps={{endAdornment: track_button}}
             />
         </form>
-        <ProductList />
+        <ProductList items={this.state.items}/>
       </div>
     );
+  }
+
+  componentDidMount() {
+    this.populateProducts()
+  }
+
+  async populateProducts() {
+    let response = await fetch("http://localhost:5000/api/get-all-prices?user_id=debug").then(res => res.json())
+    let i = 0;
+    let items = {}
+    for (let i = 0; i < this.state.limit; i++) {
+      items[i] = {
+        exists: 'false',
+        vendor_name: '',
+        name: '',
+        img_url: '',
+        price: '',
+      }
+    }
+    for (const vendor_name in response) {
+      console.log(vendor_name)
+      let vendor = response[vendor_name]
+      for (const id in vendor) {
+        if (i >= this.state.limit) {
+          break;
+        }
+        let p;
+        console.log(response)
+        let lastprice = vendor[id].prices.pop()[1];
+        items[i] = {
+          exists: 'true',
+          vendor_name: vendor_name,
+          name: vendor[id].info.name,
+          img_url: vendor[id].info.img_url,
+          price: lastprice,
+        }
+        console.log(response)
+        i++;
+      }
+    }
+    this.setState({items: items})
   }
 }
 
