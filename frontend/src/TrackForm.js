@@ -30,10 +30,12 @@ class TrackForm extends React.Component {
     this.setState({url: event.target.value});
   }
 
-  handleSubmit(event) {
+  async handleSubmit(event) {
     event.preventDefault()
     let url = 'http://localhost:5000/api/add-from-url?user_id=debug&url=' + this.state.url;
-    fetch(url).then(res => res.text()).then(txt => console.log(txt))
+    await fetch(url).then(res => res.text()).then(txt => console.log(txt))
+    console.log("AFTER")
+    this.props.updateList();
   }
 
   render() {
@@ -52,18 +54,17 @@ class TrackForm extends React.Component {
     return (
       <div>
         <form className={classes.root} onSubmit={this.handleSubmit}>
-            <TextField
-              fullWidth
-              variant="outlined"
-              size="small"
-              type="text"
-              label="Product URL"
-              value={this.state.url}
-              onChange={this.handleChange}
-              InputProps={{endAdornment: track_button}}
-            />
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            type="text"
+            label="Product URL"
+            value={this.state.url}
+            onChange={this.handleChange}
+            InputProps={{endAdornment: track_button}}
+          />
         </form>
-        <ProductList />
       </div>
     );
   }
