@@ -1,10 +1,12 @@
 import flask
+from flask_cors import CORS
 from db import saletrackerdb
-from scraper import Scraper
+import scraper
 from time import time
 
 db = saletrackerdb()
 f = flask.Flask(__name__)
+CORS(f)
 
 f.config["DEBUG"] = True
 
@@ -27,10 +29,9 @@ def update():
 def update_all():
     for vendor in db.get_all_vendors():
         vendor_name = vendor['vendor_name']
-        s = Scraper(vendor_name)
         for product_id in vendor['products']:
-            prices = s.vendor.get_price(product_id)
-            db.add_price(vendor_name, product_id, time(), prices['actual_price'])
+            price = scraper.get_info(vendor_name=vendor_name, product_id=product_id)['price']
+            db.add_price(vendor_name, product_id, time(), price)
     return {}
 
 
@@ -47,17 +48,14 @@ def create_user():
     return {}
 
 
-@f.route('/api/link-product', methods=['GET'])
-def link_product():
+
+@f.route('/api/unlink-product', methods=['GET'])
+def unlink_product():
     args = flask.request.args
     vendor_name = args.get('vendor_name')
     product_id = args.get('product_id')
     user_id = args.get('user_id')
-    info = db.get_product_info(vendor_name, product_id)
-    if not info:
-        s = Scraper(vendor_name)
-        db.add_product(vendor_name, product_id, s.vendor.get_name(product_id), s.vendor.get_desc(product_id))
-    db.link_product(user_id, vendor_name, product_id)
+    db.unlink_product(user_id, vendor_name, product_id)
     return {}
 
 
@@ -67,9 +65,10 @@ def get_all_prices():
     user = db.get_user(args.get('user_id'))
     result = {}
     for vendor_name in user['products']:
+        result[vendor_name] = {}
         for product_id in user['products'][vendor_name]:
             product_info = db.get_product_info(vendor_name, product_id)
-            result[product_id] = product_info
+            result[vendor_name][product_id] = product_info
 
     return result
 
@@ -78,5 +77,35 @@ def add_vendor():
     vendor_name = flask.request.args.get('vendor_name')
     db.add_vendor(vendor_name)
     return {}
+
+@f.route('/api/add-from-url', methods=['GET'])
+def add_from_url():
+
+    # Parse args
+    args = flask.request.args
+    user_id = args.get('user_id')
+    url = args.get('url')
+
+    # Scrape info
+    info = scraper.get_info(url=url)
+
+    product_id = info['product_id']
+    vendor_name = info['vendor_name']
+    initial_price = info['price']
+    product_info = {
+        'name': info['product_name'],
+        'desc': info['desc'],
+        'img_url': info['img_url']
+    }
+    result = db.link_product(user_id, vendor_name, product_id, time(), initial_price, product_info)
+    return {'success': result}
+
+@f.route('/api/add-user/', methods=['GET'])
+def add_user():
+    args = flask.request.args
+    user_id = args.get('user_id')
+    db.create_user(user_id)
+    return {}
+
 
 f.run()

@@ -1,35 +1,13 @@
-from secrets import token_urlsafe
-from hashlib import sha256
 from pymongo import MongoClient
 
-
 class saletrackerdb:
-    KEY_LENGTH = 16
 
     def __init__(self):
-        self.VENDORS = ["woolworths"]
         self.client = MongoClient()
         self.db = self.client.saletracker
 
     def get_user(self, user_id):
         return self.db.users.find_one({"id": user_id})
-
-    def get_from_key(self, key):
-        user_id = self.db.keys.find_one({"key": key})
-        return user_id
-
-    def create_key(self, user_id):
-        key = token_urlsafe(self.KEY_LENGTH)
-        while self.db.keys.find({"key": key}):
-            key = token_urlsafe(self.KEY_LENGTH)
-
-        encrypted_key = sha256(key).hexdigest()
-        self.db.keys.insert_one(
-            {
-                "key": encrypted_key,
-                "user_id": user_id
-            }
-        )
 
     def create_user(self, user_id):
         if self.get_user(user_id) is None:
@@ -43,7 +21,9 @@ class saletrackerdb:
         else:
             return False
 
-    def link_product(self, user_id, vendor_name, product_id):
+    def link_product(self, user_id: str, vendor_name: str, product_id: str, timestamp: float, initial_price: float, product_info: dict):
+        if not self.get_product_info(vendor_name, product_id):
+            self.add_product(vendor_name, product_id, timestamp, initial_price, product_info)
         vendor_names = self.db.users.find_one({'id': user_id})['products']
         if vendor_name not in vendor_names:
             vendor_names[vendor_name] = {}
@@ -54,39 +34,58 @@ class saletrackerdb:
         else:
             return False
 
-
-    def add_vendor(self, vendor_name):
-        if self.get_vendor(vendor_name) is not None:
+    def unlink_product(self, user_id, vendor_name, product_id):
+        vendor_names = self.db.users.find_one({'id': user_id})['products']
+        if vendor_name not in vendor_names:
             return False
-        self.db.products.insert_one(
-            {
-                "vendor_name": vendor_name,
-                "products": {}
-            }
-        )
-        return True
-
-    def add_product(self, vendor_name, product_id, product_name, product_desc=None):
-        vendor = self.get_vendor(vendor_name)
-        product = vendor['products'].get(product_id)
-        if not product:
-            vendor['products'][product_id] = {
-                "name": product_name,
-                "description": product_desc,
-                "prices": {}
-            }
-            self.db.products.update_one({"vendor_name": vendor_name}, {"$set": {'products': vendor['products']}})
+        elif product_id in vendor_names[vendor_name]:
+            vendor_names[vendor_name].pop(product_id)
+            self.db.users.update_one({'id': user_id}, {'$set': {'products': vendor_names}})
             return True
         else:
             return False
 
+    def add_vendor(self, vendor_name):
+        if self.get_vendor(vendor_name) is not None:
+            return None
 
-    def add_price(self, vendor_name, product_id, timestamp, price):
+        vendor = {
+            "vendor_name": vendor_name,
+            "products": {}
+        }
+        self.db.products.insert_one(vendor)
+
+        return vendor
+
+    def add_product(self, vendor_name: str, product_id: str, timestamp: float, initial_price: float, product_info: dict):
+        vendor = self.get_vendor(vendor_name)
+        if not vendor:
+            vendor = self.add_vendor(vendor_name)
+
+        product = vendor['products'].get(product_id)
+        if not product:
+            vendor['products'][product_id] = {
+                'info': product_info,
+                'prices': []
+            }
+            self.db.products.update_one({"vendor_name": vendor_name}, {"$set": {'products': vendor['products']}})
+            self.add_price(vendor_name, product_id, timestamp, initial_price)
+            return True
+        else:
+            return False
+
+    def add_price(self, vendor_name: str, product_id: str, timestamp: float, price: float) -> bool:
         vendor = self.get_vendor(vendor_name)
         products = vendor['products']
         if products.get(product_id):
-            products[product_id]['prices'][str(timestamp)] = str(price)
+            if len(products[product_id]['prices']) != 0:
+                last_time, last_price = products[product_id]['prices'][-1]
+                if last_price == price:
+                    return True
+
+            products[product_id]['prices'].append([str(timestamp), str(price)])
             self.db.products.update_one({"vendor_name": vendor_name}, {"$set": {'products': products}})
+            return True
         else:
             return False
 
@@ -102,8 +101,7 @@ class saletrackerdb:
             product = vendor["products"].get(product_id)
             if product:
                 return product
-
-        return False
+        return None
 
     def remove_product(self, vendor_name, product_id):
         products = self.get_vendor(vendor_name)["products"]

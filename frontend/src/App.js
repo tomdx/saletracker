@@ -1,25 +1,24 @@
-import logo from './logo.svg';
+import React, { Component, StrictMode } from "react";
+import PropTypes from 'prop-types'
+import { withStyles } from "@material-ui/core/styles";
+import { Button, TextField } from '@material-ui/core';
 import './App.css';
+import ProductBox from "./ProductBox";
+import ProductList from "./ProductList"
+import TrackForm from "./trackform"
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+
+
+
+class App extends Component {
+  render() {
+    return (
+      <div>
+        <TrackForm />
+      </div>
+    )
+  }
 }
+
 
 export default App;
