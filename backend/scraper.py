@@ -1,6 +1,6 @@
 from product.woolworths import WoolworthsProduct
 from product.coles import ColesProduct
-from product.product import Product
+from product.myer import MyerProduct
 from exceptions import InvalidProductException, InvalidVendorException, BadArgumentsException
 
 
@@ -24,6 +24,8 @@ def get_info(vendor_name: str=None, product_id: str=None, url: str=None):
         product = WoolworthsProduct(product_id=product_id, url=url)
     elif vendor_name == 'coles':
         product = ColesProduct()
+    elif vendor_name == 'myer':
+        product = MyerProduct()
     else:
         raise InvalidVendorException
 
