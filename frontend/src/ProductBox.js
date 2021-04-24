@@ -5,6 +5,7 @@ import Grid from '@material-ui/core/Grid';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import ButtonBase from '@material-ui/core/ButtonBase';
+import { Link } from '@material-ui/core'
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -57,7 +58,12 @@ export default function ProductBox(props) {
                 </Grid>
                 <Grid item>
                   <Typography variant="body2" style={{ cursor: 'pointer' }}>
-                    Remove
+                    <Link
+                      href="#"
+                      onClick={() => props.removeProduct(props.vendor_name, props.product_id)} color="inherit"
+                    >
+                      Remove
+                    </Link>
                   </Typography>
                 </Grid>
               </Grid>
