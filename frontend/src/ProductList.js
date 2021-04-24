@@ -16,6 +16,7 @@ class ProductList extends React.Component {
         img_url: '',
         id: '',
         price: '',
+        desc: '',
       }
     }
     for (const vendor_name in response) {
@@ -33,6 +34,7 @@ class ProductList extends React.Component {
           img_url: vendor[id].info.img_url,
           id: id,
           price: lastprice,
+          desc: vendor[id].info.desc,
         }
         i++;
       }
@@ -57,6 +59,7 @@ class ProductList extends React.Component {
         img_url: '',
         id: '',
         price: '',
+        desc: '',
       }
     }
     this.updateList = this.updateList.bind(this)
@@ -68,10 +71,9 @@ class ProductList extends React.Component {
     console.log("updated apparently")
   }
 
-  async removeProduct(vendor_name, product_id) {
+  removeProduct(vendor_name, product_id) {
     let url = 'http://localhost:5000/api/unlink-product?user_id=debug&product_id=' + product_id + "&vendor_name=" + vendor_name
-    await fetch(url)
-    await this.populateProducts();
+    fetch(url).then(() => this.populateProducts());
   }
 
   render() {
@@ -86,6 +88,7 @@ class ProductList extends React.Component {
         img_url={this.state[i].img_url}
         price={"$" + parseInt(this.state[i].price, 10).toFixed(2)}
         product_id={this.state[i].id}
+        desc={this.state[i].desc}
         removeProduct={this.removeProduct}
       />)
     }
@@ -94,7 +97,7 @@ class ProductList extends React.Component {
         <TrackForm updateList={this.updateList}/>
         {boxes}
       </div>
-    )
+  )
   }
 }
 
