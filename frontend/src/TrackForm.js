@@ -4,7 +4,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { Button, TextField, FormControl, Grid } from '@material-ui/core';
 import { TrendingUp } from '@material-ui/icons';
 import './App.css';
-import ProductList from "./ProductBox"
+import ProductList from "./ProductList"
 
 const styles = theme => ({
     root: {
@@ -15,9 +15,10 @@ const styles = theme => ({
     button: {
       "padding-left": '3%'
     }
+
 })
 
-class NameForm extends React.Component {
+class TrackForm extends React.Component {
   constructor(props) {
     super(props);
     this.state = {url: ''};
@@ -62,13 +63,14 @@ class NameForm extends React.Component {
               InputProps={{endAdornment: track_button}}
             />
         </form>
+        <ProductList />
       </div>
     );
   }
 }
 
-NameForm.propTypes = {
+TrackForm.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(NameForm);
+export default withStyles(styles)(TrackForm);

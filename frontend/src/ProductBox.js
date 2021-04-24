@@ -49,10 +49,10 @@ export default function ProductBox(props) {
                     {props.name}
                   </Typography>
                   <Typography variant="body2" gutterBottom>
-                    Full resolution 1920x1080 • JPEG
+                    {props.vendor_name}
                   </Typography>
                   <Typography variant="body2" color="textSecondary">
-                    ID: 1030114
+                      some text
                   </Typography>
                 </Grid>
                 <Grid item>

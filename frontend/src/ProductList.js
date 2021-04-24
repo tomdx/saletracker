@@ -60,7 +60,8 @@ class ProductList extends React.Component {
               vendor_name={this.state[i].vendor_name}
               name={this.state[i].name}
               img_url={this.state[i].img_url}
-              price={"$" + parseInt(this.state[i].price, 10).toFixed(2)}/>)
+              price={"$" + parseInt(this.state[i].price, 10).toFixed(2)}
+            />)
         }
         return <div>{boxes}</div>
     }
