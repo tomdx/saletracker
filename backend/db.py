@@ -1,16 +1,37 @@
 from pymongo import MongoClient
+import bcrypt
 
-class saletrackerdb:
+class Saletrackerdb:
 
-    def __init__(self):
-        self.client = MongoClient()
+    def __init__(self, username, password):
+        self.client = MongoClient(f"mongodb+srv://{username}:{password}@saletracker.jkwzr.mongodb.net/saletracker?retryWrites=true&w=majority")
+        db = self.client.test
         self.db = self.client.saletracker
 
     def get_user(self, user_id):
         return self.db.users.find_one({"id": user_id})
 
-    def create_user(self, user_id):
-        if self.get_user(user_id) is None:
+    def get_credentials(self, user_id: str):
+        return self.db.credentials.find_one({"id": user_id})
+
+    def verify_user(self, user_id, password):
+        credentials = self.get_credentials(user_id)
+        password = password.encode('utf-8')
+        return bcrypt.hashpw(password, credentials['salt']) == credentials['hashed']
+
+
+    def create_user(self, user_id, password):
+        password = password.encode('utf-8')
+        if self.get_credentials(user_id) is None:
+            salt = bcrypt.gensalt()
+            hashed = bcrypt.hashpw(password, salt)
+            self.db.credentials.insert_one(
+                {
+                    "id": user_id,
+                    "hashed": hashed,
+                    "salt": salt,
+                }
+            )
             self.db.users.insert_one(
                 {
                     "id": user_id,
