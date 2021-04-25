@@ -1,6 +1,6 @@
 import requests
 from product.product import Product
-from exceptions import BadArgumentsException
+from exceptions import BadArgumentsException, InvalidResponseException
 
 
 class WoolworthsProduct(Product):
@@ -19,11 +19,15 @@ class WoolworthsProduct(Product):
         else:
             raise BadArgumentsException
 
-        r = requests.get(f"https://www.woolworths.com.au/apis/ui/product/detail/{self.id}").json()
-        self.product_name = r['Product']['Name']
-        self.price = r['Product']['Price']
-        self.desc = r['Product']['Description']
-        self.img_url = r['Product']['SmallImageFile']
+        try:
+            r = requests.get(f"https://www.woolworths.com.au/apis/ui/product/detail/{self.id}").json()
+            self.product_name = r['Product']['Name']
+            self.price = r['Product']['Price']
+            self.desc = r['Product']['Description']
+            self.img_url = r['Product']['SmallImageFile']
+        except TypeError:
+            raise InvalidResponseException
+
 
     def get_vendor_name(self) -> str:
         return 'woolworths'
