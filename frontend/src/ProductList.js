@@ -5,7 +5,7 @@ import TrackForm from "./TrackForm";
 
 class ProductList extends React.Component {
   async populateProducts() {
-    let response = await fetch("http://localhost:5000/api/get-all-prices?user_id=debug").then(res => res.json())
+    let response = await fetch("/api/get-all-prices", { credentials: 'include'}).then(res => res.json())
     let i = 0;
     let products = {}
     for (let i = 0; i < this.limit; i++) {
@@ -72,7 +72,7 @@ class ProductList extends React.Component {
   }
 
   removeProduct(vendor_name, product_id) {
-    let url = 'http://localhost:5000/api/unlink-product?user_id=debug&product_id=' + product_id + "&vendor_name=" + vendor_name
+    let url = '/api/unlink-product?product_id=' + product_id + "&vendor_name=" + vendor_name
     fetch(url).then(() => this.populateProducts());
   }
 
@@ -86,7 +86,7 @@ class ProductList extends React.Component {
         vendor_name={this.state[i].vendor_name}
         name={this.state[i].name}
         img_url={this.state[i].img_url}
-        price={"$" + parseInt(this.state[i].price, 10).toFixed(2)}
+        price={"$" + parseFloat(this.state[i].price, 10).toFixed(2)}
         product_id={this.state[i].id}
         desc={this.state[i].desc}
         removeProduct={this.removeProduct}
