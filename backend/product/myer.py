@@ -1,3 +1,3 @@
-from product import Product
+from product.product import Product
 class MyerProduct(Product):
     pass
