@@ -45,7 +45,8 @@ class Saletrackerdb:
     def link_product(self, user_id: str, vendor_name: str, product_id: str, timestamp: float, initial_price: float, product_info: dict):
         if not self.get_product_info(vendor_name, product_id):
             self.add_product(vendor_name, product_id, timestamp, initial_price, product_info)
-        vendor_names = self.db.users.find_one({'id': user_id})['products']
+        print(user_id)
+        vendor_names = self.get_user(user_id)['products']
         if vendor_name not in vendor_names:
             vendor_names[vendor_name] = {}
         if product_id not in vendor_names[vendor_name]:

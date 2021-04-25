@@ -64,7 +64,6 @@ def unlink_product():
 def get_all_prices():
     user = db.get_user(flask_login.current_user.get_id())
     result = {}
-    print(db.get_user(flask_login.current_user.get_id()))
     for vendor_name in user['products']:
         result[vendor_name] = {}
         for product_id in user['products'][vendor_name]:
@@ -75,11 +74,12 @@ def get_all_prices():
 
 
 @app.route('/api/add-from-url', methods=['GET'])
+@flask_login.login_required
 def add_from_url():
 
     # Parse args
     args = flask.request.args
-    user_id = args.get('user_id')
+    user_id = flask_login.current_user.get_id()
     url = args.get('url')
 
     # Scrape info

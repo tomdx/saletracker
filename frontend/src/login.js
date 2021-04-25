@@ -2,9 +2,8 @@ import React, { Component, StrictMode } from "react";
 import PropTypes from 'prop-types'
 import { withStyles } from "@material-ui/core/styles";
 import { Button, TextField, FormControl, Grid } from '@material-ui/core';
-import { TrendingUp } from '@material-ui/icons';
 import './App.css';
-import ProductList from "./ProductList"
+import { withRouter } from 'react-router-dom'
 
 const styles = theme => ({
   root: {
@@ -34,11 +33,11 @@ class LoginForm extends React.Component {
     this.setState({ [e.currentTarget.id]: e.currentTarget.value})
   }
 
-  async handleRegister(event) {
+  handleRegister(event) {
   }
   async handleLogin(event) {
     event.preventDefault()
-    let url = 'http://localhost:5000/login';
+    let url = '/login';
     let fd = new FormData();
     fd.append("username", this.state.user)
     fd.append("password", this.state.pass)
@@ -46,6 +45,8 @@ class LoginForm extends React.Component {
       method: 'POST',
       body: fd,
     })
+    const { history } = this.props;
+    history.push('/tracker')
   }
 
   render() {
@@ -116,4 +117,4 @@ LoginForm.propTypes = {
   classes: PropTypes.object.isRequired,
 }
 
-export default withStyles(styles)(LoginForm);
+export default withRouter(withStyles(styles)(LoginForm));

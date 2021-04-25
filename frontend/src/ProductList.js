@@ -81,16 +81,17 @@ class ProductList extends React.Component {
     let boxes = []
     for (let i = 0; i < this.limit; i++) {
       boxes.push(
-      <ProductBox
-        exists={this.state[i].exists}
-        vendor_name={this.state[i].vendor_name}
-        name={this.state[i].name}
-        img_url={this.state[i].img_url}
-        price={"$" + parseFloat(this.state[i].price, 10).toFixed(2)}
-        product_id={this.state[i].id}
-        desc={this.state[i].desc}
-        removeProduct={this.removeProduct}
-      />)
+        <ProductBox
+          exists={this.state[i].exists}
+          vendor_name={this.state[i].vendor_name}
+          name={this.state[i].name}
+          img_url={this.state[i].img_url}
+          price={"$" + parseFloat(this.state[i].price, 10).toFixed(2)}
+          product_id={this.state[i].id}
+          desc={this.state[i].desc}
+          removeProduct={this.removeProduct}
+        />
+      )
     }
     return (
       <div>
