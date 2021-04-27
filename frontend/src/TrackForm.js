@@ -32,7 +32,7 @@ class TrackForm extends React.Component {
 
   async handleSubmit(event) {
     event.preventDefault()
-    let url = '/api/add-from-url?url=' + this.state.url;
+    let url = 'http://sale-tracker.net/api/api/add-from-url?url=' + this.state.url;
     await fetch(url).then(res => res.text()).then(txt => console.log(txt))
     console.log("AFTER")
     this.props.updateList();

@@ -54,7 +54,7 @@ def unlink_product():
     args = flask.request.args
     vendor_name = args.get('vendor_name')
     product_id = args.get('product_id')
-    user_id = db.get_user(flask_login.current_user.get_id())
+    user_id = flask_login.current_user.get_id()
     db.unlink_product(user_id, vendor_name, product_id)
     return {}
 
@@ -100,9 +100,10 @@ def add_from_url():
 @app.route('/signup', methods=['POST'])
 def signup():
     form = flask.request.form
-    db.create_user(form['username'], form['password'])
-    return {}
-
+    if db.create_user(form['username'], form['password']):
+        return {'success': 'true'}
+    else:
+        return {'success': 'false'}
 
 
 @app.route('/login', methods=['POST'])
@@ -116,15 +117,9 @@ def login():
     if db.verify_user(username, password):
         user_manager.store_user(User(username))
         flask_login.login_user(user_manager.get_user(username))
-        next = flask.request.args.get('next')
+        return {'success': 'true'}
+    else:
+        return {'success': 'false'}
 
-        if not is_safe_url(next):
-            return flask.abort(400)
-        return flask.redirect('http://localhost:5000/')
-    return {}
-
-
-def is_safe_url(url):
-    return True
 
 app.run()

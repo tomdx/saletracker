@@ -22,7 +22,9 @@ class LoginForm extends React.Component {
     super(props);
     this.state = {
       user: '',
-      pass: ''
+      pass: '',
+      error_msg: '⠀',  // This is the blank symbol U+2800
+      error_msg_color: 'black'
     }
     this.handleChange = this.handleChange.bind(this);
     this.handleLogin = this.handleLogin.bind(this);
@@ -33,20 +35,43 @@ class LoginForm extends React.Component {
     this.setState({ [e.currentTarget.id]: e.currentTarget.value})
   }
 
-  handleRegister(event) {
-  }
-  async handleLogin(event) {
+  async handleRegister(event) {
     event.preventDefault()
-    let url = '/login';
+    let url = '/api/signup';
     let fd = new FormData();
     fd.append("username", this.state.user)
     fd.append("password", this.state.pass)
-    await fetch(url, {
+    let result = await fetch(url, {
       method: 'POST',
       body: fd,
-    })
-    const { history } = this.props;
-    history.push('/tracker')
+    }).then(text => text.json())
+    console.log(result['success'] )
+    if (result['success'] === 'true') {
+      this.setState({'error_msg_color': 'green'})
+      this.setState({'error_msg': 'Registration successful. Please log in'})
+    } else {
+      this.setState({'error_msg_color': 'red'})
+      this.setState({'error_msg': 'Username taken'})
+    }
+
+  }
+  async handleLogin(event) {
+    event.preventDefault()
+    let url = '/api/login';
+    let fd = new FormData();
+    fd.append("username", this.state.user)
+    fd.append("password", this.state.pass)
+    let result = await fetch(url, {
+      method: 'POST',
+      body: fd,
+    }).then(text => text.json())
+    if (result['success'] === 'true') {
+      const {history} = this.props;
+      history.push('/tracker')
+    } else {
+      this.setState({'error_msg_color': 'red'})
+      this.setState({'error_msg': 'Invalid credentials'})
+    }
   }
 
   render() {
@@ -105,7 +130,7 @@ class LoginForm extends React.Component {
         <div>
           {pass_field}
         </div>
-        <br />
+        <h4 style={{ color: this.state.error_msg_color}}>{this.state.error_msg}</h4>
         {register_button}
         {login_button}
       </div>

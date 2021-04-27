@@ -1,11 +1,14 @@
 import React from "react";
 import ProductBox from "./ProductBox";
 import TrackForm from "./TrackForm";
+import { withRouter } from "react-router-dom"
 
 
 class ProductList extends React.Component {
   async populateProducts() {
-    let response = await fetch("/api/get-all-prices", { credentials: 'include'}).then(res => res.json())
+    const { history } = this.props
+    let response = await fetch("http://sale-tracker.net/api//api/get-all-prices", { credentials: 'include'}).then(res => res.json())
+      .catch(() => history.push('http://sale-tracker.net/api/login'))
     let i = 0;
     let products = {}
     for (let i = 0; i < this.limit; i++) {
@@ -72,7 +75,7 @@ class ProductList extends React.Component {
   }
 
   removeProduct(vendor_name, product_id) {
-    let url = '/api/unlink-product?product_id=' + product_id + "&vendor_name=" + vendor_name
+    let url = 'http://sale-tracker.net/api/api/unlink-product?product_id=' + product_id + "&vendor_name=" + vendor_name
     fetch(url).then(() => this.populateProducts());
   }
 
@@ -102,4 +105,4 @@ class ProductList extends React.Component {
   }
 }
 
-export default ProductList
+export default withRouter(ProductList)

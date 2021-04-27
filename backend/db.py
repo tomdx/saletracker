@@ -16,6 +16,9 @@ class Saletrackerdb:
 
     def verify_user(self, user_id, password):
         credentials = self.get_credentials(user_id)
+        if not credentials:
+            return False
+
         password = password.encode('utf-8')
         return bcrypt.hashpw(password, credentials['salt']) == credentials['hashed']
 
