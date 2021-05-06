@@ -34,12 +34,12 @@ def load_user(user_id):
     return user_manager.get_user(user_id)
 
 
-@app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def home():
     return "Home"
 
 
-@app.route('/update-all', methods=['GET'])
+@app.route('/api/update-all', methods=['GET'])
 def update_all():
     for vendor in db.get_all_vendors():
         vendor_name = vendor['vendor_name']
@@ -49,7 +49,7 @@ def update_all():
     return {}
 
 
-@app.route('/unlink-product', methods=['GET'])
+@app.route('/api/unlink-product', methods=['GET'])
 def unlink_product():
     args = flask.request.args
     vendor_name = args.get('vendor_name')
@@ -59,7 +59,7 @@ def unlink_product():
     return {}
 
 
-@app.route('/get-all-prices', methods=['GET'])
+@app.route('/api/get-all-prices', methods=['GET'])
 @flask_login.login_required
 def get_all_prices():
     user = db.get_user(flask_login.current_user.get_id())
@@ -73,7 +73,7 @@ def get_all_prices():
     return result
 
 
-@app.route('/add-from-url', methods=['GET'])
+@app.route('/api/add-from-url', methods=['GET'])
 @flask_login.login_required
 def add_from_url():
 
@@ -97,7 +97,7 @@ def add_from_url():
     return {'success': result}
 
 
-@app.route('/signup', methods=['POST'])
+@app.route('/api/signup', methods=['POST'])
 def signup():
     form = flask.request.form
     if db.create_user(form['username'], form['password']):
@@ -106,7 +106,7 @@ def signup():
         return {'success': 'false'}
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/login', methods=['POST'])
 def login():
     form = flask.request.form
     if not form:
@@ -120,6 +120,6 @@ def login():
     else:
         return {'success': 'false'}
 
-@app.route('/touch', methods=['GET'])
+@app.route('/api/touch', methods=['GET'])
 def touch():
     return {'status': 'OK'}

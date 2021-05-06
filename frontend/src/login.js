@@ -37,7 +37,7 @@ class LoginForm extends React.Component {
 
   async handleRegister(event) {
     event.preventDefault()
-    let url = 'http://sale-tracker.net/api/signup';
+    let url = '/api/signup';
     let fd = new FormData();
     fd.append("username", this.state.user)
     fd.append("password", this.state.pass)
@@ -57,7 +57,7 @@ class LoginForm extends React.Component {
   }
   async handleLogin(event) {
     event.preventDefault()
-    let url = 'http://sale-tracker.net/api/login';
+    let url = '/api/login';
     let fd = new FormData();
     fd.append("username", this.state.user)
     fd.append("password", this.state.pass)
@@ -67,7 +67,7 @@ class LoginForm extends React.Component {
     }).then(text => text.json())
     if (result['success'] === 'true') {
       const {history} = this.props;
-      history.push('http://sale-tracker.net/tracker')
+      history.push('/tracker')
     } else {
       this.setState({'error_msg_color': 'red'})
       this.setState({'error_msg': 'Invalid credentials'})
