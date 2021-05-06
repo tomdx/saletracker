@@ -109,7 +109,6 @@ def signup():
 @app.route('/login', methods=['POST'])
 def login():
     form = flask.request.form
-    print(form)
     if not form:
         return {}
     username = form['username']
