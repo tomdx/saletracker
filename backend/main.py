@@ -121,7 +121,5 @@ def login():
     else:
         return {'success': 'false'}
 
-@app.route('/api/touch', methods=['GET'])
-def touch():
-    return {"status": "OK"}
 
+app.run()
