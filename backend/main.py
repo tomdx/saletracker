@@ -39,7 +39,7 @@ def home():
     return "Home"
 
 
-@app.route('/api/update-all', methods=['GET'])
+@app.route('/update-all', methods=['GET'])
 def update_all():
     for vendor in db.get_all_vendors():
         vendor_name = vendor['vendor_name']
@@ -49,7 +49,7 @@ def update_all():
     return {}
 
 
-@app.route('/api/unlink-product', methods=['GET'])
+@app.route('/unlink-product', methods=['GET'])
 def unlink_product():
     args = flask.request.args
     vendor_name = args.get('vendor_name')
@@ -59,7 +59,7 @@ def unlink_product():
     return {}
 
 
-@app.route('/api/get-all-prices', methods=['GET'])
+@app.route('/get-all-prices', methods=['GET'])
 @flask_login.login_required
 def get_all_prices():
     user = db.get_user(flask_login.current_user.get_id())
@@ -73,7 +73,7 @@ def get_all_prices():
     return result
 
 
-@app.route('/api/add-from-url', methods=['GET'])
+@app.route('/add-from-url', methods=['GET'])
 @flask_login.login_required
 def add_from_url():
 
