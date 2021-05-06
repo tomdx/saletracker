@@ -7,7 +7,7 @@ import { withRouter } from "react-router-dom"
 class ProductList extends React.Component {
   async populateProducts() {
     const { history } = this.props
-    let response = await fetch("http://sale-tracker.net/api//api/get-all-prices", { credentials: 'include'}).then(res => res.json())
+    let response = await fetch("http://sale-tracker.net/api/get-all-prices", { credentials: 'include'}).then(res => res.json())
       .catch(() => history.push('http://sale-tracker.net/api/login'))
     let i = 0;
     let products = {}
@@ -75,7 +75,7 @@ class ProductList extends React.Component {
   }
 
   removeProduct(vendor_name, product_id) {
-    let url = 'http://sale-tracker.net/api/api/unlink-product?product_id=' + product_id + "&vendor_name=" + vendor_name
+    let url = 'http://sale-tracker.net/api/unlink-product?product_id=' + product_id + "&vendor_name=" + vendor_name
     fetch(url).then(() => this.populateProducts());
   }
 
