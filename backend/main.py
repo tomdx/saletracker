@@ -124,5 +124,3 @@ def login():
 @app.route('/touch', methods=['GET'])
 def touch():
     return {'status': 'OK'}
-
-app.run()
