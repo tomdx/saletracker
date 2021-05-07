@@ -11,8 +11,8 @@ const styles = theme => ({
     'padding-top': '10%'
   },
   button: {
-    'padding-left': '25px',
-    'padding-right': '25px'
+    'margin-left': '25px',
+    'margin-right': '25px'
   }
 
 })
@@ -101,6 +101,7 @@ class LoginForm extends React.Component {
   let login_button = (
       <Button
         className={classes.button}
+        variant="text"
         size="large"
         type="submit"
         value="Submit"
@@ -112,6 +113,7 @@ class LoginForm extends React.Component {
     let register_button = (
       <Button
         className={classes.button}
+        variant="text"
         size="large"
         type="submit"
         value="Submit"
