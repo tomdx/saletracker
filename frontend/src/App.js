@@ -8,6 +8,7 @@ import ProductList from "./ProductList"
 import TrackForm from "./TrackForm"
 import LoginForm from "./login"
 import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import PriceHistory from "./PriceHistory";
 
 
 

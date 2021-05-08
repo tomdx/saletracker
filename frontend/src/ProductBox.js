@@ -31,7 +31,6 @@ const useStyles = makeStyles(theme => ({
   },
 }))
 
-
 export default function ProductBox(props) {
   const classes = useStyles()
   if (props.exists === 'false') {
@@ -39,7 +38,7 @@ export default function ProductBox(props) {
   }
   return (
     <div className={classes.root}>
-      <Paper className={classes.paper}>
+      <Paper className={classes.paper} onClick={() => props.showGraph(props.box_number)}>
         <Grid container spacing={2}>
           <Grid item>
             <ButtonBase className={classes.image}>

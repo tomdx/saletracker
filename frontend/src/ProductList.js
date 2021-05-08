@@ -2,6 +2,7 @@ import React from "react";
 import ProductBox from "./ProductBox";
 import TrackForm from "./TrackForm";
 import { withRouter } from "react-router-dom"
+import PriceHistory from "./PriceHistory";
 
 
 class ProductList extends React.Component {
@@ -28,8 +29,14 @@ class ProductList extends React.Component {
         if (i >= this.limit) {
           break;
         }
-        let p;
-        let lastprice = vendor[id].prices.pop()[1];
+        let pricetimes = vendor[id].prices
+        let prices = []
+        let times = []
+        for (let i = 0; i < pricetimes.length; i++) {
+          times.push(pricetimes[i][0])
+          prices.push(pricetimes[i][1])
+        }
+        let lastprice = prices[prices.length - 1]
         products[i] = {
           exists: 'true',
           vendor_name: vendor_name,
@@ -38,6 +45,9 @@ class ProductList extends React.Component {
           id: id,
           price: lastprice,
           desc: vendor[id].info.desc,
+          prices: prices,
+          times: times,
+          box_number: i
         }
         i++;
       }
@@ -65,18 +75,33 @@ class ProductList extends React.Component {
         desc: '',
       }
     }
+    this.state.prices = []
+    this.state.times = []
     this.updateList = this.updateList.bind(this)
     this.removeProduct = this.removeProduct.bind(this)
+    this.showGraph = this.showGraph.bind(this)
   }
 
   updateList() {
     this.populateProducts()
-    console.log("updated apparently")
   }
 
   removeProduct(vendor_name, product_id) {
     let url = '/api/unlink-product?product_id=' + product_id + "&vendor_name=" + vendor_name
     fetch(url).then(() => this.populateProducts());
+  }
+
+  //showGraph(product_name, times, prices) {
+  async showGraph(box_number) {
+    let prices = this.state[box_number].prices
+    let times = this.state[box_number].times
+    let newstate = {
+      prices: prices,
+      times: times
+    }
+    console.log(prices)
+    console.log(times)
+    this.setState(newstate)
   }
 
   render() {
@@ -93,6 +118,8 @@ class ProductList extends React.Component {
           product_id={this.state[i].id}
           desc={this.state[i].desc}
           removeProduct={this.removeProduct}
+          showGraph={this.showGraph}
+          box_number={this.state[i].box_number}
         />
       )
     }
@@ -100,6 +127,7 @@ class ProductList extends React.Component {
       <div>
         <TrackForm updateList={this.updateList}/>
         {boxes}
+        <PriceHistory times={this.state.times} prices={this.state.prices} />
       </div>
   )
   }
