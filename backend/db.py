@@ -103,12 +103,11 @@ class Saletrackerdb:
         vendor = self.get_vendor(vendor_name)
         products = vendor['products']
         if products.get(product_id):
-            if len(products[product_id]['prices']) != 0:
-                last_time, last_price = products[product_id]['prices'][-1]
-                if last_price == price:
-                    return True
-
-            products[product_id]['prices'].append([str(timestamp), str(price)])
+            price_entry = {
+                'time': str(timestamp),
+                'price': str(price)
+            }
+            products[product_id]['prices'].append(price_entry)
             self.db.products.update_one({"vendor_name": vendor_name}, {"$set": {'products': products}})
             return True
         else:
@@ -136,3 +135,6 @@ class Saletrackerdb:
             return True
         else:
             return False
+
+
+

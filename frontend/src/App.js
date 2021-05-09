@@ -7,7 +7,8 @@ import ProductBox from "./ProductBox";
 import ProductList from "./ProductList"
 import TrackForm from "./TrackForm"
 import LoginForm from "./login"
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter as Router, Switch, Route, Link, Redirect } from "react-router-dom";
+import PriceHistory from "./PriceHistory";
 
 
 
@@ -18,7 +19,7 @@ class App extends Component {
         <div>
           <Switch>
             <Route exact path="/">
-              <Link to="/login">LOGIN </Link>
+              <Redirect to="/login" />
             </Route>
             <Route exact path="/login">
               <LoginForm />
