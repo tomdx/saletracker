@@ -62,16 +62,25 @@ def unlink_product():
 @app.route('/api/get-all-prices', methods=['GET'])
 @flask_login.login_required
 def get_all_prices():
-    user = db.get_user(flask_login.current_user.get_id())
+    user_id = flask_login.current_user.get_id()
+    user = db.get_user(user_id)
     result = {}
     for vendor_name in user['products']:
         result[vendor_name] = {}
         for product_id in user['products'][vendor_name]:
             product_info = db.get_product_info(vendor_name, product_id)
-            result[vendor_name][product_id] = product_info
+            if product_info:
+                result[vendor_name][product_id] = product_info
+            else:
+                db.unlink_product(user_id, vendor_name, product_id)
 
     return result
 
+@app.route('/api/add-vendor', methods=['GET'])
+def add_vendor():
+    args = flask.request.args
+    db.add_vendor(args.get('vendor_name'))
+    return {}
 
 @app.route('/api/add-from-url', methods=['GET'])
 @flask_login.login_required
@@ -123,3 +132,4 @@ def login():
 @app.route('/api/touch', methods=['GET'])
 def touch():
     return {'status': 'OK'}
+

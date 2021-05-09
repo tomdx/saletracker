@@ -33,8 +33,8 @@ class ProductList extends React.Component {
         let prices = []
         let times = []
         for (let i = 0; i < pricetimes.length; i++) {
-          times.push(pricetimes[i][0])
-          prices.push(pricetimes[i][1])
+          times.push(pricetimes[i].time)
+          prices.push(pricetimes[i].price)
         }
         let lastprice = prices[prices.length - 1]
         products[i] = {
@@ -97,10 +97,9 @@ class ProductList extends React.Component {
     let times = this.state[box_number].times
     let newstate = {
       prices: prices,
-      times: times
+      times: times,
+      name: this.state[box_number].name
     }
-    console.log(prices)
-    console.log(times)
     this.setState(newstate)
   }
 
@@ -127,7 +126,7 @@ class ProductList extends React.Component {
       <div>
         <TrackForm updateList={this.updateList}/>
         {boxes}
-        <PriceHistory times={this.state.times} prices={this.state.prices} />
+        <PriceHistory times={this.state.times} prices={this.state.prices} product_name={this.state.name}/>
       </div>
   )
   }

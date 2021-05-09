@@ -45,7 +45,6 @@ class LoginForm extends React.Component {
       method: 'POST',
       body: fd,
     }).then(text => text.json())
-    console.log(result['success'] )
     if (result['success'] === 'true') {
       this.setState({'error_msg_color': 'green'})
       this.setState({'error_msg': 'Registration successful. Please log in'})
