@@ -1,2 +1,0 @@
-class InvalidVendorException(Exception):
-    pass

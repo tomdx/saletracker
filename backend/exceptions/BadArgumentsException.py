@@ -1,2 +1,0 @@
-class BadArgumentsException(Exception):
-    pass
