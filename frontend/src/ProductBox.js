@@ -70,7 +70,8 @@ export default function ProductBox(props) {
               </Grid>
             </Grid>
             <Grid item>
-              <Typography variant="subtitle1">{props.price}</Typography>
+              <Typography variant="subtitle1">Current price: {props.price}</Typography>
+              <Typography variant="subtitle1">Regular sale price: {props.price}</Typography>
             </Grid>
           </Grid>
         </Grid>

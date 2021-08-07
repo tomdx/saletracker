@@ -10,12 +10,11 @@ const styles = theme => ({
     root: {
         height: 50,
         "padding": '50px',
-        "padding-right": '30%',
+        "align": 'center'
     },
     button: {
       "padding-left": '3%'
     }
-
 })
 
 class TrackForm extends React.Component {

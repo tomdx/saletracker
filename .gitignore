@@ -1,4 +1,5 @@
 /backend/bin
+/backend/lib
 /backend/secret
 /frontend/node_modules/
 

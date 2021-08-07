@@ -16,7 +16,7 @@ export default function PriceHistory(props) {
   let data = [
     [
       { type: 'date', label: 'Day' },
-      'Price',
+      '',
     ],
   ]
   for (let i = 0; i < props.prices.length; i++) {
@@ -41,6 +41,7 @@ export default function PriceHistory(props) {
           }
         ]}
         options={{
+          legend: 'none',
           title: props.product_name,
           vAxis: {title: 'Price', format: 'currency'},
           hAxis: {title: 'Time'},

@@ -9,7 +9,7 @@ class ProductList extends React.Component {
   async populateProducts() {
     const { history } = this.props
     let response = await fetch("/api/get-all-prices", { credentials: 'include'}).then(res => res.json())
-      .catch(() => history.push('/api/login'))
+      .catch(() => history.push('/login'))
     let i = 0;
     let products = {}
     for (let i = 0; i < this.limit; i++) {
@@ -62,6 +62,7 @@ class ProductList extends React.Component {
   constructor(props) {
     super(props);
     this.limit = 50;
+    this.currentGraph = -1;
 
     this.state = {}
     for (let i = 0; i < this.limit; i++) {
@@ -93,6 +94,7 @@ class ProductList extends React.Component {
 
   //showGraph(product_name, times, prices) {
   async showGraph(box_number) {
+    this.currentGraph = box_number
     let prices = this.state[box_number].prices
     let times = this.state[box_number].times
     let newstate = {
@@ -106,6 +108,7 @@ class ProductList extends React.Component {
   render() {
 
     let boxes = []
+    let pricehistory = <PriceHistory times={this.state.times} prices={this.state.prices} product_name={this.state.name}/>
     for (let i = 0; i < this.limit; i++) {
       boxes.push(
         <ProductBox
@@ -121,12 +124,14 @@ class ProductList extends React.Component {
           box_number={this.state[i].box_number}
         />
       )
+      if (this.currentGraph == i) {
+        boxes.push(pricehistory)
+      }
     }
     return (
       <div>
         <TrackForm updateList={this.updateList}/>
         {boxes}
-        <PriceHistory times={this.state.times} prices={this.state.prices} product_name={this.state.name}/>
       </div>
   )
   }
