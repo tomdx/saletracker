@@ -1,4 +1,4 @@
-from src.user.user import User
+from user.user import User
 class UserManager:
 
     def __init__(self):

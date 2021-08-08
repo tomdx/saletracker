@@ -1,4 +1,4 @@
-from src.product.product import Product
+from product.product import Product
 
 class ColesProduct(Product):
 

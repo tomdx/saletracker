@@ -3,8 +3,12 @@ from product.coles import ColesProduct
 from product.myer import MyerProduct
 from exceptions import InvalidProductException, InvalidVendorException, BadArgumentsException
 
-
 def _parse_vendor(url: str) -> str:
+    """
+    Give a URL, get a vendor name
+    :param url: URL
+    :return: vendor name
+    """
     if "woolworths" in url:
         return "woolworths"
     elif "coles" in url:
@@ -14,15 +18,20 @@ def _parse_vendor(url: str) -> str:
 
 
 def get_info(vendor_name: str=None, product_id: str=None, url: str=None):
+    """
+    Supply either a vendor name + product ID, or a URL. Returns product information
+    :param vendor_name: Vendor name
+    :param product_id: Product ID
+    :param url: URL
+    :return: Product information
+    """
     if not vendor_name:
         if url:
             vendor_name = _parse_vendor(url)
         else:
             raise BadArgumentsException
 
-    if vendor_name == 'woolworths':
-        product = WoolworthsProduct(product_id=product_id, url=url)
-    elif vendor_name == 'coles':
+    if vendor_name == 'coles':
         product = ColesProduct()
     elif vendor_name == 'myer':
         product = MyerProduct()
