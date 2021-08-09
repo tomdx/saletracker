@@ -135,4 +135,5 @@ def touch():
     return {'status': 'OK'}
 
 create_price_scheduler(update_all)
-app.run()
+if __name__ == "__main__":
+    app.run()
