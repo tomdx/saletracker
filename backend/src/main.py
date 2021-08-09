@@ -5,12 +5,13 @@ import flask_login
 from flask_login import LoginManager
 from flask_cors import CORS
 from time import time
+from user.user import User
+from user.user_manager import UserManager
 
 from db import Saletrackerdb
-from user.user_manager import UserManager
-from user.user import User
+from price_scheduler import create_price_scheduler
 
-with open('credentials.txt') as credentials:
+with open('secret/credentials.txt') as credentials:
     username = credentials.readline().strip()
     password = credentials.readline().strip()
 
@@ -22,7 +23,7 @@ login_manager = LoginManager()
 login_manager.init_app(app)
 app.config['CORS_HEADERS'] = 'Content-Type'
 
-with open('flask_secret_key.txt') as key:
+with open('secret/flask_secret_key.txt') as key:
     app.secret_key = key.readline().strip()
 
 app.config["DEBUG"] = True
@@ -133,3 +134,5 @@ def login():
 def touch():
     return {'status': 'OK'}
 
+create_price_scheduler(update_all)
+app.run()

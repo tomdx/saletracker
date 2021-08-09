@@ -1,1 +1,6 @@
+/backend/bin
+/backend/lib
+/backend/src/secret
+/backend/pyvenv.cfg
 /frontend/node_modules/
+

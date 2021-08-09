@@ -1,4 +1,3 @@
-from db import Saletrackerdb
 from flask_login import UserMixin
 
 class User(UserMixin):
