@@ -31,7 +31,9 @@ def get_info(vendor_name: str=None, product_id: str=None, url: str=None):
         else:
             raise BadArgumentsException
 
-    if vendor_name == 'coles':
+    if vendor_name == 'woolworths':
+        product = WoolworthsProduct(product_id=product_id, url=url)
+    elif vendor_name == 'coles':
         product = ColesProduct()
     elif vendor_name == 'myer':
         product = MyerProduct()

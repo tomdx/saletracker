@@ -5,9 +5,6 @@ from exceptions import InvalidResponseException
 
 
 class WoolworthsProduct(Product):
-    """
-    WOOLWORTHS NO LONGER WORKS"
-    """
 
     @staticmethod
     def __parse_product_id(url):
@@ -24,12 +21,14 @@ class WoolworthsProduct(Product):
             raise BadArgumentsException
 
         try:
-            info_url = f"https://www.woolworths.com.au/apis/ui/product/detail/{self.id}"
-            r = requests.get(info_url).json()
-            self.product_name = r['Product']['Name']
-            self.price = r['Product']['Price']
-            self.desc = r['Product']['Description']
-            self.img_url = r['Product']['SmallImageFile']
+            info_url = f"https://www.woolworths.com.au/api/v3/ui/schemaorg/product/{self.id}"
+            user_agent = {'User-agent': 'Mozilla/5.0'}
+            r = requests.get(info_url, headers=user_agent)
+            r = r.json()
+            self.product_name = r['name']
+            self.price = r['offers']['price']
+            self.desc = r['description']
+            self.img_url = r['image']
         except TypeError:
             raise InvalidResponseException
 
